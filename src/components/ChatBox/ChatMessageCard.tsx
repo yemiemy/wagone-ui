@@ -1,4 +1,4 @@
-import { cn, format12HTimestamp, format24HTimestamp } from "@/lib/utils";
+import { cn, format12HTimestamp } from "@/lib/utils";
 import React from "react";
 
 type Props = {
