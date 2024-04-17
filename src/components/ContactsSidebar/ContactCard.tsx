@@ -6,8 +6,6 @@ import { User } from "@/lib/models/user";
 
 type ContactCardProps = {
     contact: User;
-    name: string;
-    image_url: string;
     message: string;
     number_of_unread_msgs: number;
     has_unviewed_status: boolean;
@@ -18,49 +16,64 @@ type ContactCardProps = {
 const ContactCard = (props: ContactCardProps) => {
     return (
         <div
-            className="flex h-[72px] cursor-pointer animate-in ease-in slide-in-from-top-1"
+            className="flex h-[72px] w-full cursor-pointer animate-in ease-in slide-in-from-top-1 overflow-hidden"
             onClick={(e) => props.handleChatNavigation(props.contact)}>
             <div className="flex">
                 <div className="flex rounded-full pr-[15px] pl-[13px] items-center">
-                    <Avatar
-                        className={cn("w-[49px] h-[49px]", {
-                            "border border-[#25D366] p-1":
-                                props.has_unviewed_status,
-                        })}>
-                        <AvatarImage src={props.image_url} alt={props.name} />
-                        <AvatarFallback>AT</AvatarFallback>
-                    </Avatar>
+                    <div
+                        className={cn(
+                            "h-[50px] w-[50px] p-1 border-white rounded-full",
+                            {
+                                "border-2 border-[#25D366] p-1": false,
+                            }
+                        )}>
+                        <Avatar className="h-full w-full">
+                            <AvatarImage
+                                src={
+                                    props.contact.avatar
+                                        ? props.contact.avatar
+                                        : ""
+                                }
+                                alt={props.contact.first_name}
+                            />
+                            <AvatarFallback>
+                                {props.contact.first_name.charAt(0) +
+                                    props.contact.last_name.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex-grow flex flex-col justify-center border-t pr-[15px]">
+            <div className="flex-grow flex flex-col justify-center truncate border-t pr-[15px]">
                 <div className="flex items-center text-left">
-                    <div className="flex-grow flex text-left text-[#6B7C85] text-base font-medium overflow-hidden break-words">
-                        <span
-                            className="flex-grow truncate inline-block relative visible w-[100px] lg:w-[200px] 3xl:w-[350px]"
+                    <div className="text-left text-[#6B7C85] text-lg font-medium overflow-hidden break-words">
+                        <h1
+                            className="truncate"
                             title={
-                                props.name +
+                                props.contact.first_name +
+                                " " +
+                                props.contact.last_name +
                                 "More name text cause why not we go again"
                             }>
-                            {props.name} More name text cause why not we go
-                            again
-                        </span>
+                            {props.contact.first_name +
+                                " " +
+                                props.contact.last_name}{" "}
+                            LOOK name text cause why not we go again
+                        </h1>
                     </div>
-                    <div className="text-[#6B7C85] mt-[3px] ml-[6px] truncate text-xs">
-                        <span className="capitalize">
+                    <div className="flex-grow min-w-fit text-[#6B7C85] mt-[3px] ml-[6px] truncate text-base font-medium">
+                        <h1 className="capitalize">
                             {format12HTimestamp(props.timestamp)}
-                        </span>
+                        </h1>
                     </div>
                 </div>
+
                 <div className="flex items-center mt-[2px] font-normal text-[13px] min-h-[20px]">
-                    <div className="flex-grow font-medium truncate text-sm">
-                        <span className="flex items-start">
-                            <span className="flex-grow text-[#54656F] relative w-[100px] lg:w-[200px] 3xl:w-[350px] truncate inline-block">
-                                {props.message} So many liong words here a s
-                                well so we test if its good!
-                            </span>
-                        </span>
-                    </div>
+                    <h2 className="font-medium text-sm items-start text-[#54656F] truncate">
+                        {props.message} So many liong words here a s well so we
+                        test if its good!
+                    </h2>
 
                     {props.number_of_unread_msgs === 0 && (
                         <Badge className="bg-[#25D366] text-white w-fit px-1 py-0.5">

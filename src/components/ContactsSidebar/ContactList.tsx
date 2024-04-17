@@ -1,7 +1,7 @@
 import React from "react";
 import ContactCard from "./ContactCard";
 import GroupContactCard from "./GroupContactCard";
-import { Loader } from "lucide-react";
+import { Contact, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { User } from "@/lib/models/user";
 
@@ -18,8 +18,9 @@ const ContactList = ({
 }: ContactListProps) => {
     return (
         <div
-            className={cn("flex flex-col flex-1 overflow-y-auto", {
-                "items-center justify-center": showContactsLoader,
+            className={cn("flex flex-col flex-1 overflow-y-auto w-full", {
+                "items-center justify-center":
+                    showContactsLoader || contacts.length === 0,
             })}>
             {showContactsLoader ? (
                 <div className="flex flex-col gap-2 items-center text-center">
@@ -28,19 +29,31 @@ const ContactList = ({
                 </div>
             ) : (
                 <>
-                    {contacts.map((contact) => (
-                        <ContactCard
-                            contact={contact}
-                            name={contact.first_name + " " + contact.last_name}
-                            image_url="/avatar-2.png"
-                            message="Oboy dash me 2k na"
-                            has_unviewed_status={true}
-                            number_of_unread_msgs={0}
-                            timestamp={contact.last_login}
-                            handleChatNavigation={handleChatNavigation}
-                            key={contact.id}
-                        />
-                    ))}
+                    {contacts.length > 0 ? (
+                        contacts.map((contact) => (
+                            <ContactCard
+                                contact={contact}
+                                message="Oboy dash me 2k na"
+                                has_unviewed_status={true}
+                                number_of_unread_msgs={0}
+                                timestamp={contact.last_login}
+                                handleChatNavigation={handleChatNavigation}
+                                key={contact.id}
+                            />
+                        ))
+                    ) : (
+                        <div className="flex flex-col gap-2 items-center text-center">
+                            <div className="flex justify-center gap-2">
+                                <Contact />
+                                <h2 className="font-semibold text-xl">
+                                    No contacts
+                                </h2>
+                            </div>
+                            <div>
+                                <p>Add new contacts to start chatting</p>
+                            </div>
+                        </div>
+                    )}
                     {/* 
                     <ContactCard
                         name="Gideon Nic"

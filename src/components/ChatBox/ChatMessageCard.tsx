@@ -15,16 +15,16 @@ const ChatMessageCard = (props: Props) => {
                 "justify-end": props.sender,
             })}>
             <div
-                className={cn("p-2 w-fit max-w-[50%] rounded-b-lg", {
+                className={cn("p-2 w-fit max-w-[80%] rounded-b-lg", {
                     "bg-[#D9FDD3] rounded-l-lg": props.sender,
                     "bg-white rounded-r-lg": !props.sender,
                 })}>
-                <div className="w-full flex gap-4 justify-between text-[#111B21]">
+                <div className="w-full flex gap-2 justify-between text-[#111B21]">
                     <p className="">{props.message}</p>
-                    <span className="text-xs flex items-end">
-                        {format12HTimestamp(props.timestamp)}
-                    </span>
                 </div>
+                <span className="text-xs w-full float-right text-right">
+                    {format12HTimestamp(props.timestamp)}
+                </span>
             </div>
         </div>
     );

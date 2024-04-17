@@ -23,13 +23,15 @@ const ChatAction = ({ handleInputChange, message, handleSendChat }: Props) => {
             <a href="/">
                 <PaperclipIcon color="#54656F" />
             </a>
-            <div className="flex justify-between items-center gap-4 w-full">
-                <div className="flex gap-7 ps-5 items-center w-full h-[50px] bg-white rounded-md">
+            <form
+                onSubmit={handleSendChat}
+                className="flex justify-between items-center gap-4 w-full">
+                <div className="flex gap-2 ps-5 items-center w-full h-[50px] bg-white rounded-md">
                     <CameraIcon color="#54656F" />
                     <input
                         type="text"
                         placeholder="Type a message..."
-                        className="w-full h-full p-2 rounded-md appearance-none"
+                        className="w-full h-full p-2 rounded-md outline-none focus:outline-none"
                         onChange={(e) => handleInputChange(e)}
                         value={message}
                     />
@@ -42,7 +44,7 @@ const ChatAction = ({ handleInputChange, message, handleSendChat }: Props) => {
                 <a href="/">
                     <MicIcon color="#54656F" />
                 </a>
-            </div>
+            </form>
         </div>
     );
 };

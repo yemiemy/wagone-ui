@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export interface Message {
     id: string;
     sender: string;
@@ -9,8 +11,8 @@ export interface Message {
 
 export interface Chat {
     id: string;
-    user1: string;
-    user2: string;
+    user1: User;
+    user2: User;
     messages: Message[];
     created_at: string;
 }

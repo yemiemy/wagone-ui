@@ -5,12 +5,22 @@ import ChatBox from "../ChatBox/ChatBox";
 import axios from "@/lib/api/axios";
 import { toast } from "sonner";
 import { Chat } from "@/lib/models/chat";
-import { User } from "@/lib/models/user";
+import {
+    deafultUser,
+    defaultContact,
+    User,
+    UserContact,
+} from "@/lib/models/user";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const ChatLayout = (props: Props) => {
-    const [contacts, setContacts] = React.useState<User[]>([]);
+    const router = useRouter();
+    const auth = Cookies.get("__token");
+    const [user, setUser] = React.useState<User>(deafultUser);
+    const [contact, setContact] = React.useState<UserContact>(defaultContact);
     const [chat, setChat] = React.useState<Chat>();
     const [showContactsLoader, setShowContactsLoader] =
         React.useState<boolean>(false);
@@ -18,18 +28,44 @@ const ChatLayout = (props: Props) => {
         detail: "",
     });
 
+    const getUser = React.useCallback(async () => {
+        if (auth) {
+            try {
+                const response = await axios.get("/account/details/", {
+                    headers: {
+                        Authorization: `Token ${auth}`,
+                    },
+                });
+                const data = await response.data;
+                setUser(data);
+            } catch (err: any) {
+                if (!err.response) {
+                    setErrMsg({
+                        detail: "No server reponse. Please try again.",
+                    });
+                    toast.error("No server reponse. Please try again.");
+                } else if (err.response) {
+                    setErrMsg(err.response.data);
+                } else {
+                    setErrMsg({
+                        detail: "Unable to process your request. Please try again.",
+                    });
+                }
+            }
+        }
+    }, [auth]);
+
     const getContacts = React.useCallback(async () => {
         setShowContactsLoader(true);
         try {
             const response = await axios.get("/account/contacts/", {
                 headers: {
-                    Authorization:
-                        "Token 8bc5cdd45b2b1f1bfe86e4a61bd47ed8f36de6ce",
+                    Authorization: `Token ${auth}`,
                 },
             });
             const data = await response.data;
             console.log(data);
-            setContacts(data);
+            setContact(data);
             toast.success("Contacts fetched successfully.");
         } catch (err: any) {
             if (!err.response) {
@@ -47,10 +83,18 @@ const ChatLayout = (props: Props) => {
         } finally {
             setShowContactsLoader(false);
         }
-    }, []);
+    }, [auth]);
+
     React.useEffect(() => {
+        if (!auth) {
+            router.replace("/auth/login");
+        }
+    }, [router, auth]);
+
+    React.useEffect(() => {
+        getUser();
         getContacts();
-    }, [getContacts]);
+    }, [getContacts, getUser]);
 
     const handleChatNavigation = async (contact: User) => {
         // create or get chat with this contact
@@ -58,18 +102,18 @@ const ChatLayout = (props: Props) => {
             let response = await axios.post(
                 "/chat/",
                 JSON.stringify({
-                    user1_id: "7074ab25-5507-40e9-bcb0-11f696b9a58d",
-                    user2_id: "981717b1-1203-46a2-9fc1-9f17505a385a",
+                    user1_id: user.id,
+                    user2_id: contact.id,
                 }),
                 {
                     headers: {
-                        Authorization:
-                            "Token 8bc5cdd45b2b1f1bfe86e4a61bd47ed8f36de6ce",
+                        Authorization: `Token ${auth}`,
                     },
                 }
             );
 
             let data = await response.data;
+            console.log("chat created", data, user.id);
             setChat(data);
         } catch (err: any) {}
     };
@@ -77,11 +121,12 @@ const ChatLayout = (props: Props) => {
     return (
         <>
             <ContactsSidebar
-                contacts={contacts}
+                // chat={chat}
+                contacts={contact.contacts}
                 showContactsLoader={showContactsLoader}
                 handleChatNavigation={handleChatNavigation}
             />
-            <ChatBox chat={chat} />
+            <ChatBox chat={chat} user={user} />
         </>
     );
 };

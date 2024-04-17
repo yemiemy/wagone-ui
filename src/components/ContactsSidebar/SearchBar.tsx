@@ -14,10 +14,9 @@ const SearchBar = (props: Props) => {
                 <input
                     type="text"
                     id="search-bar"
-                    className="w-full h-full p-2 rounded-md appearance-none bg-[#F0F2F5]"
+                    className="w-full h-full p-2 rounded-md appearance-none outline-none focus:outline-none bg-[#F0F2F5]"
                     placeholder="Search or start new chat"
                 />
-                {/* <span className="text-[#54656F]">Search or start new chat</span> */}
             </div>
             <span>
                 <ListFilterIcon color="#54656F" />
